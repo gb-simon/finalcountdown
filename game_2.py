@@ -80,6 +80,21 @@ class Player(Warrior):
         pygame.draw.rect(window, (0, 255, 0), (self.x, self.y + self.warrior_img.get_height() +
                          10, self.warrior_img.get_width() * (self.health/self.max_health), 10))
 
+class Enemy(Warrior):
+    def __init__(self, x, y, health=100):
+        super().__init__(x, y, health)
+        self.warrior_img = RED_SPACE_SHIP
+        self.laser_img = RED_LASER
+        self.mask = pygame.mask.from_surface(self.warrior_img)
+
+    def move(self, vel):
+            self.x += vel
+
+    def shoot(self):
+        if self.cool_down_counter == 0:
+            laser = Laser(self.x-20, self.y, self.warrior_img)
+            self.lasers.append(laser)
+            self.cool_down_counter = 1
 
 class Laser:
     def __init__(self, x, y, img):
@@ -114,6 +129,7 @@ def main():
     main_font = pygame.font.SysFont("Arial", 30)
     player_vel = 5
     player = Player(300, 330)
+    enemy = Enemy(300, 30)
     clock = pygame.time.Clock()
 
     def redraw_window():
@@ -123,7 +139,7 @@ def main():
         level_label = main_font.render(
             f"You warrior level: {level}", 1, (255, 255, 255))
         WIN.blit(level_label, (WIDTH - level_label.get_width() - 10, 10))
-
+        enemy.draw(WIN)
         player.draw(WIN)
         pygame.display.update()
 
