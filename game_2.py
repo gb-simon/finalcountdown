@@ -29,7 +29,7 @@ BLUE_LASER = pygame.image.load(os.path.join("assets", "pixel_laser_blue.png"))
 YELLOW_LASER = pygame.image.load(
     os.path.join("assets", "pixel_laser_yellow.png"))
 
-#scaling image
+# scaling image
 YELLOW_WARRIOR = pygame.transform.scale(YELLOW_WARRIOR, SIZE)
 RED_WARRIOR = pygame.transform.scale(RED_WARRIOR, SIZE)
 GREEN_WARRIOR = pygame.transform.scale(GREEN_WARRIOR, SIZE)
@@ -41,7 +41,29 @@ BG = pygame.transform.scale(pygame.image.load(
     os.path.join("assets", "background-3.jpg")), (WIDTH, HEIGHT))
 
 
+class Laser:
+    def __init__(self, x, y, img):
+        self.x = x
+        self.y = y
+        self.img = img
+        self.mask = pygame.mask.from_surface(self.img)
+
+    def draw(self, window):
+        window.blit(self.img, (self.x, self.y))
+
+    def move(self, vel):
+        self.y += vel
+
+    def off_screen(self, height):
+        return not(self.y <= height and self.y >= 0)
+
+    def collision(self, obj):
+        return collide(self, obj)
+
+
 class Warrior:
+    COOLDOWN = 30
+
     def __init__(self, x, y, health=100):
         self.x = x
         self.y = y
@@ -52,8 +74,25 @@ class Warrior:
         self.cool_down_counter = 0
 
     def draw(self, window):
-        # pygame.draw.rect(window, (255, 250, 0), (self.x, self.y, 50, 50))
         window.blit(self.warrior_img, (self.x, self.y))
+        for laser in self.lasers:
+            laser.draw(window)
+
+    def move_lasers(self, vel, obj):
+        self.cooldown()
+        for laser in self.lasers:
+            laser.move(vel)
+            if laser.off_screen(HEIGHT):
+                self.lasers.remove(laser)
+            elif laser.collision(obj):
+                obj.health -= 10
+                self.lasers.remove(laser)
+
+    def cooldown(self):
+        if self.cool_down_counter >= self.COOLDOWN:
+            self.cool_down_counter = 0
+        elif self.cool_down_counter > 0:
+            self.cool_down_counter += 1
 
     def get_width(self):
         return self.warrior_img.get_width()
@@ -67,6 +106,16 @@ class Warrior:
             self.lasers.append(laser)
             self.cool_down_counter = 1
 
+    def move_lasers(self, vel, obj):
+        self.cooldown()
+        for laser in self.lasers:
+            laser.move(vel)
+            if laser.off_screen(HEIGHT):
+                self.lasers.remove(laser)
+            elif laser.collision(obj):
+                obj.health -= 10
+                self.lasers.remove(laser)
+
 
 class Player(Warrior):
     def __init__(self, x, y, health=100):
@@ -75,6 +124,19 @@ class Player(Warrior):
         self.laser_img = YELLOW_LASER
         self.mask = pygame.mask.from_surface(self.warrior_img)
         self.max_health = health
+
+    def move_lasers(self, vel, objs):
+        self.cooldown()
+        for laser in self.lasers:
+            laser.move(vel)
+            if laser.off_screen(HEIGHT):
+                self.lasers.remove(laser)
+            else:
+                for obj in objs:
+                    if laser.collision(obj):
+                        objs.remove(obj)
+                        if laser in self.lasers:
+                            self.lasers.remove(laser)
 
     def draw(self, window):
         super().draw(window)
@@ -100,7 +162,6 @@ class Enemy(Warrior):
         self.mask = pygame.mask.from_surface(self.warrior_img)
         self.max_health = health
 
-
     def move(self, vel):
         self.x += vel
         if(self.x == 50):
@@ -110,15 +171,17 @@ class Enemy(Warrior):
         super().draw(window)
         self.healthbar(window)
 
-    def shoot(self):
+    def hit(self):
         if self.cool_down_counter == 0:
             laser = Laser(self.x-20, self.y, self.laser_img)
             self.lasers.append(laser)
             self.cool_down_counter = 1
 
     def healthbar(self, window):
-        pygame.draw.rect(window, (255,0,0), (self.x, self.y + self.warrior_img.get_height() + 10, self.warrior_img.get_width(), 10))
-        pygame.draw.rect(window, (0,255,0), (self.x, self.y + self.warrior_img.get_height() + 10, self.warrior_img.get_width() * (self.health/self.max_health), 10))
+        pygame.draw.rect(window, (255, 0, 0), (self.x, self.y +
+                         self.warrior_img.get_height() + 10, self.warrior_img.get_width(), 10))
+        pygame.draw.rect(window, (0, 255, 0), (self.x, self.y + self.warrior_img.get_height() +
+                         10, self.warrior_img.get_width() * (self.health/self.max_health), 10))
 
 
 class Laser:
@@ -158,6 +221,7 @@ def main():
     enemies = []
     wave_length = 1
     enemy_vel = 1
+    laser_vel = 5
 
     def redraw_window():
         WIN.blit(BG, (0, 0))
@@ -165,7 +229,7 @@ def main():
 
         level_label = main_font.render(
             f"Your warrior level: {level}", 1, (0, 0, 0))
-        WIN.blit(level_label, (WIDTH - level_label.get_width() - 605, 580))
+        WIN.blit(level_label, (WIDTH - level_label.get_width() - 600, 580))
         for enemy in enemies:
             enemy.draw(WIN)
 
@@ -200,6 +264,17 @@ def main():
 
         for enemy in enemies[:]:
             enemy.move(enemy_vel)
+            enemy.move_lasers(laser_vel, player)
 
+            if random.randrange(0, 2*60) == 1:
+                enemy.hit()
+
+            if collide(enemy, player):
+                player.health -= 1
+                enemy.health -= 1
+            elif enemy.x + enemy.get_width() > WIDTH:
+                enemy.x -= enemy_vel
+
+        player.move_lasers(-laser_vel, enemies)
 
 main()
