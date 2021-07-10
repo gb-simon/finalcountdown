@@ -32,7 +32,7 @@ YELLOW_LASER = pygame.image.load(
 # Background
 # BG = (50, 50, 50)
 BG = pygame.transform.scale(pygame.image.load(
-    os.path.join("assets", "background-blue.jpg")), (WIDTH, HEIGHT))
+    os.path.join("assets", "background-blue.JFIF")), (WIDTH, HEIGHT))
 
 
 class Warrior:
