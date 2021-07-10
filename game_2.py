@@ -164,8 +164,8 @@ def main():
         # Draw text
 
         level_label = main_font.render(
-            f"You warrior level: {level}", 1, (0, 0, 0))
-        WIN.blit(level_label, (WIDTH - level_label.get_width() - 10, 10))
+            f"Your warrior level: {level}", 1, (0, 0, 0))
+        WIN.blit(level_label, (WIDTH - level_label.get_width() - 605, 580))
         for enemy in enemies:
             enemy.draw(WIN)
 
@@ -177,7 +177,7 @@ def main():
         redraw_window()
 
         if len(enemies) == 0:
-            level += 1
+            level += 0
             for i in range(wave_length):
                 enemy = Enemy(50, 50, random.choice(["red", "green", "blue"]))
                 enemies.append(enemy)
