@@ -46,8 +46,8 @@ class Warrior:
         self.cool_down_counter = 0
 
     def draw(self, window):
-        pygame.draw.rect(window, (255, 0, 0), (self.x, self.y, 50, 50))
-         #   window.blit(self.warrior_img, (self.x, self.y))
+        pygame.draw.rect(window, (255, 250, 0), (self.x, self.y, 50, 50))
+        # window.blit(self.warrior_img, (self.x, self.y))
 
     def get_width(self):
         return self.warrior_img.get_width()
@@ -69,6 +69,16 @@ class Player(Warrior):
         self.laser_img = YELLOW_LASER
         self.mask = pygame.mask.from_surface(self.warrior_img)
         self.max_health = health
+
+    def draw(self, window):
+        super().draw(window)
+        self.healthbar(window)
+
+    def healthbar(self, window):
+        pygame.draw.rect(window, (255, 0, 0), (self.x, self.y +
+                         self.warrior_img.get_height() + 10, self.warrior_img.get_width(), 10))
+        pygame.draw.rect(window, (0, 255, 0), (self.x, self.y + self.warrior_img.get_height() +
+                         10, self.warrior_img.get_width() * (self.health/self.max_health), 10))
 
 
 class Laser:
