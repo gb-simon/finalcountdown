@@ -134,9 +134,8 @@ class Player(Warrior):
             else:
                 for obj in objs:
                     if laser.collision(obj):
-                        objs.remove(obj)
-                        if laser in self.lasers:
-                            self.lasers.remove(laser)
+                     obj.health -= 10
+                     self.lasers.remove(laser)
 
     def draw(self, window):
         super().draw(window)
@@ -272,9 +271,11 @@ def main():
             if collide(enemy, player):
                 player.health -= 1
                 enemy.health -= 1
+
             elif enemy.x + enemy.get_width() > WIDTH:
                 enemy.x -= enemy_vel
 
         player.move_lasers(-laser_vel, enemies)
+
 
 main()
