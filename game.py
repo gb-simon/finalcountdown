@@ -7,7 +7,9 @@ pygame.init()
 def game():
 
     pygame.init()
-    WIDTH = 600
+
+    #Variables: colors, sizes, etc
+    WIDTH = 800
     HEIGHT = 600
     RED = (255, 0, 0)
     BLUE = (0, 0, 255)
@@ -16,7 +18,7 @@ def game():
     player_size = 25
     player_pos = [WIDTH/2, HEIGHT-2*player_size]
 
-    enemy_size = 25
+    enemy_size = 50
     enemy_pos = [random.randint(0, WIDTH-player_size), 0]
     enemy_list = [enemy_pos]
 
