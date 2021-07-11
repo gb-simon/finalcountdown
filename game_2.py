@@ -9,17 +9,19 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 SIZE = (70, 70)
 pygame.display.set_caption("The Final Countdown")
 
+upon_theGoal = HEIGHT / 2 - 100  # closest to the top of the map
+down_theGoal = HEIGHT / 2 + 100  # closest to the bottom of the map
+print(upon_theGoal)
+print(down_theGoal)
 # Load images
 RED_WARRIOR = pygame.image.load(
-    os.path.join("assets", "red.png"))
-RED_WARRIOR = pygame.image.load(
-    os.path.join("assets", "red.png"))
+    os.path.join("assets", "red_player.png"))
 GREEN_WARRIOR = pygame.image.load(
-    os.path.join("assets", "green.png"))
+    os.path.join("assets", "green_player.png"))
 BLUE_WARRIOR = pygame.image.load(
-    os.path.join("assets", "blue.png"))
+    os.path.join("assets", "blue_player.png"))
 YELLOW_WARRIOR = pygame.image.load(
-    os.path.join("assets", "yellow.png"))
+    os.path.join("assets", "yellow_player.png"))
 
 # Lasers
 RED_LASER = pygame.image.load(os.path.join("assets", "pixel_laser_red.png"))
@@ -41,29 +43,8 @@ BG = pygame.transform.scale(pygame.image.load(
     os.path.join("assets", "background-3.jpg")), (WIDTH, HEIGHT))
 
 
-class Laser:
-    def __init__(self, x, y, img):
-        self.x = x
-        self.y = y
-        self.img = img
-        self.mask = pygame.mask.from_surface(self.img)
-
-    def draw(self, window):
-        window.blit(self.img, (self.x, self.y))
-
-    def move(self, vel):
-        # self.y += vel
-        pass
-
-    def off_screen(self, height):
-        return not(self.y <= height and self.y >= 0)
-
-    def collision(self, obj):
-        return collide(self, obj)
-
-
 class Warrior:
-    COOLDOWN = 30
+    COOLDOWN = 15
 
     def __init__(self, x, y, health=100):
         self.x = x
@@ -163,13 +144,22 @@ class Enemy(Warrior):
         self.max_health = health
 
     def move(self, vel):
-
-        if(self.x <= 50 or self.y <= 50):
-            self.x += vel
-            self.y += vel
-        elif(self.y >= 250):
-            self.x -= vel
+        dy_enemy = int((self.y - (self.y - 25)) / 50)
+        dx_enemy = int((self.x - (self.x - 25)) / 50)
+  
+        self.y += vel
+        self.x += vel
+        if(self.y == 100):
             self.y -= vel
+        if(self.x == 550):
+            self.x -= vel
+            self.x = 50
+
+   
+
+
+        
+
 
     def draw(self, window):
         super().draw(window)
@@ -221,17 +211,17 @@ def main():
     enemy_level = 1
     main_font = pygame.font.SysFont("comicsans", 30)
     final_font = pygame.font.SysFont("comicsans", 60)
-    player_vel = 5
     player = Player(300, 330)
     clock = pygame.time.Clock()
     enemies = []
     wave_length = 1
+    player_vel = 5
     enemy_vel = 1
-    laser_vel = 5
+    laser_vel = 8
+    victory = False
+    victory_count = 0
     lost = False
     lost_count = 0
-    victory_count = 0
-    victory = False
 
     def redraw_window():
         WIN.blit(BG, (0, 0))
@@ -275,7 +265,7 @@ def main():
 
         if victory:
             if victory_count == 5:
-                title_label = main_font.render("Continue", 1, (0,0,255))
+                title_label = main_font.render("Continue", 1, (0, 0, 255))
                 WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 450))
                 pygame.display.update()
                 for event in pygame.event.get():
@@ -285,7 +275,7 @@ def main():
                 continue
         if lost:
             if lost_count == 5:
-                title_label = main_font.render("Continue", 1, (0,0,255))
+                title_label = main_font.render("Continue", 1, (0, 0, 255))
                 WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 450))
                 pygame.display.update()
                 for event in pygame.event.get():
@@ -347,4 +337,22 @@ def main():
         player.move_lasers(-laser_vel, enemies)
 
 
-main()
+def main_menu():
+    
+    title_font = pygame.font.SysFont("comicsans", 70)
+    run = True
+    while run:
+        WIN.blit(BG, (0, 0))
+        title_label = title_font.render(
+            "Press the mouse to begin...", 1, (255, 255, 255))
+        WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 350))
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                main()
+    pygame.quit()
+
+
+main_menu()
