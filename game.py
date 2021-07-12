@@ -24,7 +24,7 @@ def main():
     enemy_level = 1
     main_font = pygame.font.SysFont("comicsans", 30)
     final_font = pygame.font.SysFont("comicsans", 60)
-    player = Player(300, 330)
+    player = Player(300, 330, random.choice(["red", "green", "blue"]))
     clock = pygame.time.Clock()
     enemies = []
     wave_length = 1

@@ -8,17 +8,6 @@ pygame.font.init()
 WIDTH, HEIGHT = 800, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 SIZE = (70, 70)
-pygame.display.set_caption("The Final Countdown")
-
-# Load images
-RED_WARRIOR = pygame.image.load(
-    os.path.join("assets", "red_player.png"))
-GREEN_WARRIOR = pygame.image.load(
-    os.path.join("assets", "green_player.png"))
-BLUE_WARRIOR = pygame.image.load(
-    os.path.join("assets", "blue_player.png"))
-YELLOW_WARRIOR = pygame.image.load(
-    os.path.join("assets", "yellow_player.png"))
 
 class Warrior:
     COOLDOWN = 10

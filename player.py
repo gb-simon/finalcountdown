@@ -36,12 +36,15 @@ BLUE_WARRIOR = pygame.transform.scale(BLUE_WARRIOR, SIZE)
 
 
 class Player(Warrior):
-
     COOLDOWN = 27
-    def __init__(self, x, y, health=100):
+    COLOR_MAP = {
+        "red": (RED_WARRIOR, RED_LASER),
+        "green": (GREEN_WARRIOR, GREEN_LASER),
+        "blue": (BLUE_WARRIOR, BLUE_LASER)
+    }
+    def __init__(self, x, y, color, health=100):
         super().__init__(x, y, health)
-        self.warrior_img = YELLOW_WARRIOR
-        self.laser_img = YELLOW_LASER
+        self.warrior_img, self.laser_img = self.COLOR_MAP[color]
         self.mask = pygame.mask.from_surface(self.warrior_img)
         self.max_health = health
 
