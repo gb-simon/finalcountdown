@@ -1,6 +1,5 @@
 
 import pygame
-import sys
 from pygame.locals import *
 
 mainClock = pygame.time.Clock()
@@ -29,13 +28,13 @@ def options():
                   (255, 255, 255), screen, 20, 60)
         draw_text('to get along with python after a time I did not use it.', font,
                   (255, 255, 255), screen, 20, 80)
-        draw_text('To win, you have to reach 25 points, ', font,
+        draw_text('To win, you have to reach level 6, ', font,
                   (255, 255, 255), screen, 20, 100)
-        draw_text('you can check your score in the inferior side.', font,
+        draw_text('you can check your level in the inferior side.', font,
                   (255, 255, 255), screen, 20, 120)
-        draw_text('To get points you have to move the arrows and avoid the enemies,', font,
+        draw_text('To get levels you have to defeat your opponent,', font,
                   (255, 255, 255), screen, 20, 140)
-        draw_text('each enemy you avoid gives you one point. Good luck, captain.', font,
+        draw_text('each enemy you defeat gives you one point. Good luck, captain.', font,
                   (255, 255, 255), screen, 20, 160)
         draw_text('Made by Gonzalo Simon.', font,
                   (255, 255, 255), screen, 20, 580)
