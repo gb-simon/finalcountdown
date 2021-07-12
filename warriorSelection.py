@@ -44,20 +44,19 @@ def warriorSelection():
         screen.blit(text_4, (140, 360))
         screen.blit(help, (100, 500))
 
-        pygame.display.flip()
 
         if blue.collidepoint((mx, my)):
             if click:
-                main()
+                main("blue")
         if green.collidepoint((mx, my)):
             if click:
-                main()
+                main("green")
         if red.collidepoint((mx, my)):
             if click:
-                main()
+                main("red")
         if yellow.collidepoint((mx, my)):
             if click:
-                main()
+                main("yellow")
 
         for event in pygame.event.get():
             if event.type == QUIT:

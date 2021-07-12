@@ -17,14 +17,14 @@ BG = pygame.transform.scale(pygame.image.load(
     os.path.join("assets", "background-3.jpg")), (WIDTH, HEIGHT))
 
 
-def main():
+def main(player_color_choice):
     run = True
     FPS = 60
     level = 1
     enemy_level = 1
     main_font = pygame.font.SysFont("comicsans", 30)
     final_font = pygame.font.SysFont("comicsans", 60)
-    player = Player(300, 330, random.choice(["red", "green", "blue"]))
+    player = Player(300, 330, player_color_choice)
     clock = pygame.time.Clock()
     enemies = []
     wave_length = 1
@@ -122,7 +122,7 @@ def main():
             enemy.move()
             enemy.move_lasers(laser_vel, player)
 
-            if random.randrange(0, 15) == 1:
+            if random.randrange(0, 16) == 1:
                 enemy.hit()
 
             if collide(enemy, player):
