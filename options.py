@@ -2,15 +2,12 @@
 import pygame
 import sys
 from pygame.locals import *
-import pygame
 
 mainClock = pygame.time.Clock()
 pygame.init()
 pygame.display.set_caption('Videogame')
 screen = pygame.display.set_mode((600, 600), 0, 32)
-
 font = pygame.font.SysFont(None, 25)
-
 
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
@@ -40,13 +37,11 @@ def options():
                   (255, 255, 255), screen, 20, 140)
         draw_text('each enemy you avoid gives you one point. Good luck, captain.', font,
                   (255, 255, 255), screen, 20, 160)
-
         draw_text('Made by Gonzalo Simon.', font,
                   (255, 255, 255), screen, 20, 580)
+
         for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
+           
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running = False
