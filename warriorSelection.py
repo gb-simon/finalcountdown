@@ -1,3 +1,4 @@
+from enemy import HEIGHT, WIDTH
 import pygame
 import sys
 from game import main
@@ -8,12 +9,20 @@ pygame.init()
 pygame.display.set_caption('The Final Countdown')
 screen = pygame.display.set_mode((800, 600), 0, 32)
 WHITE = (255, 255, 255)
-font = pygame.font.SysFont(None, 35)
+title_font = pygame.font.SysFont(None, 35)
+warrior_font = pygame.font.SysFont(None, 15)
+normal_font = pygame.font.SysFont(None, 25)
 BACKGROUND_COLOR = (173, 216, 230)
+square_size_x, square_size_y = 75, 75
 
+# Colors
+blue_color = (0, 0, 255)
+green_color = (0, 255, 0)
+red_color = (255, 0, 0)
+yellow_color = (255, 255, 0)
 
-def draw_text(text, font, color, surface, x, y):
-    textobj = font.render(text, 1, color)
+def draw_text(text, normal_font, color, surface, x, y):
+    textobj = normal_font.render(text, 1, color)
     textrect = textobj.get_rect()
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
@@ -24,24 +33,31 @@ def warriorSelection():
     running = True
     while running:
         screen.fill(BACKGROUND_COLOR)
-        draw_text('main menu', font, (255, 255, 255), screen, 20, 20)
+        draw_text('main menu', normal_font, (255, 255, 255), screen, 20, 20)
         mx, my = pygame.mouse.get_pos()
-        yellow = pygame.Rect(50, 100, 200, 50)
-        red = pygame.Rect(50, 200, 200, 50)
-        blue = pygame.Rect(50, 100, 200, 50)
-        green = pygame.Rect(50, 200, 200, 50)
-        title = font.render("Select your warrior", True, (0, 0, 0))
-        text_1 = font.render("Blue Warrior", True, (0, 100, 190))
-        text_2 = font.render("Green Warrior", True, (0, 155, 0))
-        text_3 = font.render("Red Warrior", True, (255, 0, 0))
-        text_4 = font.render("Yellow Warrior", True, (190, 190, 0))
-        help = font.render("With the arrows you move. Press space to attact", True, (0, 0, 0))
+
+        blue = pygame.Rect(200, 150, square_size_x, square_size_y)
+        green = pygame.Rect(300, 150, square_size_x, square_size_y)
+        red = pygame.Rect(400, 150, square_size_x, square_size_y)
+        yellow = pygame.Rect(500, 150, square_size_x, square_size_y)
+
+        title = title_font.render("Select your warrior", True, (0, 0, 0))
+        text_1 = warrior_font.render("Blue Warrior", True, (0, 100, 190))
+        text_2 = warrior_font.render("Green Warrior", True, (0, 155, 0))
+        text_3 = warrior_font.render("Red Warrior", True, (255, 0, 0))
+        text_4 = warrior_font.render("Yellow Warrior", True, (190, 190, 0))
+        help = normal_font.render("With the arrows you move. Press space to attact", True, (0, 0, 0))
+        
+        pygame.draw.rect(screen, blue_color, blue)
+        pygame.draw.rect(screen, green_color, green)
+        pygame.draw.rect(screen, red_color, red)
+        pygame.draw.rect(screen, yellow_color, yellow)
 
         screen.blit(title, (300, 60))
-        screen.blit(text_1, (140, 150))
-        screen.blit(text_2, (140, 220))
-        screen.blit(text_3, (140, 290))
-        screen.blit(text_4, (140, 360))
+        screen.blit(text_1, (210, 250))
+        screen.blit(text_2, (310, 250))
+        screen.blit(text_3, (410, 250))
+        screen.blit(text_4, (510, 250))
         screen.blit(help, (100, 500))
 
 
