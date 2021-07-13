@@ -73,9 +73,9 @@ def main(player_color_choice):
         clock.tick(FPS)
         redraw_window()
 
-        if victory_count == 5:
+        if victory_count == 4:
             victory = True
-        elif lost_count == 5:
+        elif lost_count == 4:
             lost = True
 
         if victory:
