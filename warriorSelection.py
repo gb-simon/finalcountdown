@@ -43,9 +43,9 @@ def warriorSelection():
 
         title = title_font.render("Select your warrior", True, (0, 0, 0))
         text_1 = warrior_font.render("Axel", True, (0, 100, 190))
-        text_2 = warrior_font.render("Letage", True, (0, 155, 0))
+        text_2 = warrior_font.render("Austin", True, (0, 155, 0))
         text_3 = warrior_font.render("Horo", True, (255, 0, 0))
-        text_4 = warrior_font.render("Ignatius", True, (190, 190, 0))
+        text_4 = warrior_font.render("Ignición", True, (190, 190, 0))
         help = normal_font.render("With the arrows you move. Press space to attact", True, (0, 0, 0))
         
         pygame.draw.rect(screen, blue_color, blue)

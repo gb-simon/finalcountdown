@@ -16,6 +16,7 @@ class Warrior:
         self.x = x
         self.y = y
         self.health = health
+        self.warrior_name = None
         self.warrior_img = None
         self.laser_img = None
         self.lasers = []

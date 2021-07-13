@@ -73,13 +73,13 @@ def main(player_color_choice):
         clock.tick(FPS)
         redraw_window()
 
-        if victory_count == 5:
+        if victory_count == 4:
             victory = True
-        elif lost_count == 5:
+        elif lost_count == 4:
             lost = True
 
         if victory:
-            if victory_count == 5:
+            if victory_count == 4:
                 stop_this_enemy = True
 
                 title_label = main_font.render("Continue", 1, (0, 0, 255))
@@ -96,7 +96,7 @@ def main(player_color_choice):
                     else:
                         continue
         if lost:
-            if lost_count == 5:
+            if lost_count == 4:
                 stop_this_player = True
                 stop_this_enemy = True
                 lost_label = final_font.render("Defeat", 1, (255, 0, 0))
