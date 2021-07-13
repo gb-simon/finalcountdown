@@ -40,7 +40,8 @@ class Player(Warrior):
     COLOR_MAP = {
         "red": (RED_WARRIOR, RED_LASER),
         "green": (GREEN_WARRIOR, GREEN_LASER),
-        "blue": (BLUE_WARRIOR, BLUE_LASER)
+        "blue": (BLUE_WARRIOR, BLUE_LASER),
+        "yellow":(YELLOW_WARRIOR, YELLOW_LASER)
     }
     def __init__(self, x, y, color, health=100):
         super().__init__(x, y, health)

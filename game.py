@@ -5,6 +5,7 @@ import random
 from pygame.locals import *
 from player import Player
 from enemy import Enemy
+import time
 
 pygame.font.init()
 
@@ -24,9 +25,9 @@ def main(player_color_choice):
     enemy_level = 1
     main_font = pygame.font.SysFont("comicsans", 30)
     final_font = pygame.font.SysFont("comicsans", 60)
-    player = Player(300, 330, player_color_choice)
     clock = pygame.time.Clock()
     enemies = []
+    players = []
     wave_length = 1
     player_vel = 3
     enemy_vel = 3
@@ -60,47 +61,68 @@ def main(player_color_choice):
         for enemy in enemies:
             enemy.draw(WIN)
 
-        player.draw(WIN)
-
-        if victory:
-            victory_label = final_font.render("Victory", 1, (0, 255, 0))
-            WIN.blit(victory_label, (WIDTH/2 -
-                                     victory_label.get_width()/2, 350))
-        if lost:
-            lost_label = final_font.render("Defeat", 1, (255, 0, 0))
-            WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, 350))
+        for player in players:
+            player.draw(WIN)
 
         pygame.display.update()
 
     while run:
+        stop_this_player = False
+        stop_this_enemy = False
+
         clock.tick(FPS)
         redraw_window()
 
+        if victory_count == 5:
+            victory = True
+        elif lost_count == 5:
+            lost = True
+
         if victory:
             if victory_count == 5:
+                stop_this_enemy = True
+
                 title_label = main_font.render("Continue", 1, (0, 0, 255))
                 WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 450))
+                victory_label = final_font.render("Victory", 1, (0, 255, 0))
+                WIN.blit(victory_label, (WIDTH/2 -
+                                         victory_label.get_width()/2, 350))
                 pygame.display.update()
                 for event in pygame.event.get():
                     if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.K_KP_ENTER:
+                        print("okay")
                         run = False
-            else:
-                continue
+
+                    else:
+                        continue
         if lost:
             if lost_count == 5:
+                stop_this_player = True
+                stop_this_enemy = True
+                lost_label = final_font.render("Defeat", 1, (255, 0, 0))
+                WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, 350))
                 title_label = main_font.render("Continue", 1, (0, 0, 255))
                 WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 450))
                 pygame.display.update()
                 for event in pygame.event.get():
                     if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.K_KP_ENTER:
                         run = False
-            else:
-                continue
+                        print("okay")
+                    else:
+                        continue
 
-        if len(enemies) == 0:
+        if len(enemies) == 0 and stop_this_enemy == False:
             for i in range(wave_length):
-                enemy = Enemy(400, 50, random.choice(["red", "green", "blue"]))
+                time.sleep(int(1.5)) 
+                enemy = Enemy(700, 50, random.choice(["red", "green", "blue", "yellow"]))
                 enemies.append(enemy)
+
+        if len(players) == 0 and stop_this_player == False:
+            for i in range(wave_length):
+                   time.sleep(int(1.5))
+                   player = Player(100, 500, player_color_choice)
+                   players.append(player)
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -118,33 +140,31 @@ def main(player_color_choice):
         if keys[pygame.K_SPACE]:
             player.hit()
 
-        for enemy in enemies[:]:
-            enemy.move()
-            enemy.move_lasers(laser_vel, player)
+        if stop_this_enemy == False:
+            
+            for enemy in enemies[:]:
+                enemy.move()
+                enemy.move_lasers(laser_vel, player)
 
-            if random.randrange(0, 16) == 1:
-                enemy.hit()
+                if random.randrange(0, 16) == 1:
+                    enemy.hit()
 
-            if collide(enemy, player):
-                player.health -= 1
-                enemy.health -= 1
+                if collide(enemy, player):
+                    player.health -= 1
+                    enemy.health -= 1
 
-            elif enemy.x + enemy.get_width() > WIDTH:
-                enemy.x -= enemy_vel
+                elif enemy.x + enemy.get_width() > WIDTH:
+                    enemy.x -= enemy_vel
 
-            if enemy.health <= 0:
-                victory_count += 1
-                level += 1
-                enemy.health = 100
+                if enemy.health <= 0:
+                    victory_count += 1
+                    level += 1
+                    enemies.remove(enemy)
 
-            if player.health <= 0:
-                lost_count += 1
-                enemy_level += 1
-                player.health = 100
+                if player.health <= 0:
+                    lost_count += 1
+                    enemy_level += 1
+                    players.remove(player)
+                    
 
-            if victory_count == 5:
-                victory = True
-            elif lost_count == 5:
-                lost = True
-
-        player.move_lasers(-laser_vel, enemies)
+                player.move_lasers(-laser_vel, enemies)

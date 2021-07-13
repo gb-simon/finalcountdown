@@ -42,10 +42,10 @@ def warriorSelection():
         yellow = pygame.Rect(500, 150, square_size_x, square_size_y)
 
         title = title_font.render("Select your warrior", True, (0, 0, 0))
-        text_1 = warrior_font.render("Blue Warrior", True, (0, 100, 190))
-        text_2 = warrior_font.render("Green Warrior", True, (0, 155, 0))
-        text_3 = warrior_font.render("Red Warrior", True, (255, 0, 0))
-        text_4 = warrior_font.render("Yellow Warrior", True, (190, 190, 0))
+        text_1 = warrior_font.render("Axel", True, (0, 100, 190))
+        text_2 = warrior_font.render("Letage", True, (0, 155, 0))
+        text_3 = warrior_font.render("Horo", True, (255, 0, 0))
+        text_4 = warrior_font.render("Ignatius", True, (190, 190, 0))
         help = normal_font.render("With the arrows you move. Press space to attact", True, (0, 0, 0))
         
         pygame.draw.rect(screen, blue_color, blue)
@@ -62,15 +62,19 @@ def warriorSelection():
 
 
         if blue.collidepoint((mx, my)):
+            print("ready for the party")
             if click:
                 main("blue")
         if green.collidepoint((mx, my)):
             if click:
+                print("NACHOOO")
                 main("green")
         if red.collidepoint((mx, my)):
+            print("dejame el red")
             if click:
                 main("red")
         if yellow.collidepoint((mx, my)):
+            print("ya está, yo estoy en bata")
             if click:
                 main("yellow")
 
