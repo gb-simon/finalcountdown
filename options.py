@@ -28,7 +28,7 @@ def options():
                   (255, 255, 255), screen, 20, 60)
         draw_text('to get along with python after a time I did not use it.', font,
                   (255, 255, 255), screen, 20, 80)
-        draw_text('To win, you have to reach level 6, ', font,
+        draw_text('To win, you have to reach level 5, ', font,
                   (255, 255, 255), screen, 20, 100)
         draw_text('you can check your level in the inferior side.', font,
                   (255, 255, 255), screen, 20, 120)
