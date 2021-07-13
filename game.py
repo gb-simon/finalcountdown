@@ -1,122 +1,170 @@
+from laser import collide
 import pygame
+import os
 import random
-import sys
-pygame.init()
+from pygame.locals import *
+from player import Player
+from enemy import Enemy
+import time
+
+pygame.font.init()
+
+WIDTH, HEIGHT = 800, 600
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+SIZE = (70, 70)
+pygame.display.set_caption("The Final Countdown")
+# Background
+BG = pygame.transform.scale(pygame.image.load(
+    os.path.join("assets", "background-3.jpg")), (WIDTH, HEIGHT))
 
 
-def game():
-
-    pygame.init()
-
-    #Variables: colors, sizes, etc
-    WIDTH = 800
-    HEIGHT = 600
-    RED = (255, 0, 0)
-    BLUE = (0, 0, 255)
-    BLACK = (0, 0, 0)
-    BACKGROUND_COLOR = (173, 216, 230)
-    player_size = 25
-    player_pos = [WIDTH/2, HEIGHT-2*player_size]
-
-    enemy_size = 50
-    enemy_pos = [random.randint(0, WIDTH-player_size), 0]
-    enemy_list = [enemy_pos]
-
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    SPEED = 5
-    score = 0
-    game_over = False
-
+def main(player_color_choice):
+    run = True
+    FPS = 60
+    level = 1
+    enemy_level = 1
+    main_font = pygame.font.SysFont("comicsans", 30)
+    final_font = pygame.font.SysFont("comicsans", 60)
     clock = pygame.time.Clock()
-    myFont = pygame.font.SysFont("monospace", 35)
+    enemies = []
+    players = []
+    wave_length = 1
+    player_vel = 3
+    enemy_vel = 3
+    laser_vel = 9
+    victory = False
+    victory_count = 0
+    lost = False
+    lost_count = 0
 
-    def drop_enemies(enemy_list):
-        delay = random.random()
+    def redraw_window():
+        WIN.blit(BG, (0, 0))
+        # Draw text
 
-        if len(enemy_list) < 10 and delay < 0.1:
-            x_pos = random.randint(0, WIDTH-enemy_size)
-            y_pos = 0
-            enemy_list.append([x_pos, y_pos])
+        player_level_label = main_font.render(
+            f"Your warrior level: {level}", 1, (0, 0, 0))
+        WIN.blit(player_level_label,
+                 (WIDTH - player_level_label.get_width() - 600, 580))
 
-    def draw_enemies(enemy_list):
-        for enemy_pos in enemy_list:
-            pygame.draw.rect(screen, RED,
-                             (enemy_pos[0], enemy_pos[1], enemy_size, enemy_size))
+        enemy_level_label = main_font.render(
+            f"Enemy's warrior level: {enemy_level}", 1, (0, 0, 0))
+        WIN.blit(enemy_level_label,
+                 (WIDTH - enemy_level_label.get_width() - 200, 580))
 
-    def update_enemy_positions(enemy_list, score):
-        for idx, enemy_pos in enumerate(enemy_list):
-            # Update position of the enemy
-            if enemy_pos[1] >= 0 and enemy_pos[1] < HEIGHT:
-                enemy_pos[1] += SPEED
-            else:
-                enemy_list.pop(idx)
-                score += 1
-        return score
+        kills = main_font.render(
+            f"K: {victory_count}", 1, (0, 0, 0))
+        WIN.blit(kills, (WIDTH - kills.get_width() - 60, 10))
+        deaths = main_font.render(
+            f"D: {lost_count}", 1, (0, 0, 0))
+        WIN.blit(deaths, (WIDTH - deaths.get_width() - 10, 10))
 
-    def collision_check(enemy_list, player_pos):
-        for enemy_pos in enemy_list:
-            if detect_collision(enemy_pos, player_pos):
-                return True
-        return False
+        for enemy in enemies:
+            enemy.draw(WIN)
 
-    def detect_collision(player_pos, enemy_pos):
-        p_x = player_pos[0]
-        p_y = player_pos[1]
+        for player in players:
+            player.draw(WIN)
 
-        e_x = enemy_pos[0]
-        e_y = enemy_pos[1]
+        pygame.display.update()
 
-        if (e_x >= p_x and e_x < (p_x + player_size)) or (p_x >= e_x and p_x < (e_x+enemy_size)):
-            if (e_y >= p_y and e_y < (p_y + player_size)) or (p_y >= e_y and p_y < (e_y+enemy_size)):
-                return True
-        return False
-    running = True
+    while run:
+        stop_this_player = False
+        stop_this_enemy = False
 
-    while not game_over:
+        clock.tick(FPS)
+        redraw_window()
+
+        if victory_count == 5:
+            victory = True
+        elif lost_count == 5:
+            lost = True
+
+        if victory:
+            if victory_count == 5:
+                stop_this_enemy = True
+
+                title_label = main_font.render("Continue", 1, (0, 0, 255))
+                WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 450))
+                victory_label = final_font.render("Victory", 1, (0, 255, 0))
+                WIN.blit(victory_label, (WIDTH/2 -
+                                         victory_label.get_width()/2, 350))
+                pygame.display.update()
+                for event in pygame.event.get():
+                    if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.K_KP_ENTER:
+                        print("okay")
+                        run = False
+
+                    else:
+                        continue
+        if lost:
+            if lost_count == 5:
+                stop_this_player = True
+                stop_this_enemy = True
+                lost_label = final_font.render("Defeat", 1, (255, 0, 0))
+                WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, 350))
+                title_label = main_font.render("Continue", 1, (0, 0, 255))
+                WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 450))
+                pygame.display.update()
+                for event in pygame.event.get():
+                    if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.K_KP_ENTER:
+                        run = False
+                        print("okay")
+                    else:
+                        continue
+
+        if len(enemies) == 0 and stop_this_enemy == False:
+            for i in range(wave_length):
+                time.sleep(int(1.5)) 
+                enemy = Enemy(700, 50, random.choice(["red", "green", "blue", "yellow"]))
+                enemies.append(enemy)
+
+        if len(players) == 0 and stop_this_player == False:
+            for i in range(wave_length):
+                   time.sleep(int(1.5))
+                   player = Player(100, 500, player_color_choice)
+                   players.append(player)
+
 
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
-                sys.exit()
+                run = False
 
-            # Setting the player movements
-            if event.type == pygame.KEYDOWN:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and player.x - player_vel > 0:  # left
+            player.x -= player_vel
+        if keys[pygame.K_RIGHT] and player.x + player_vel + player.get_width() < WIDTH:  # right
+            player.x += player_vel
+        if keys[pygame.K_UP] and player.y - player_vel > 0:  # up
+            player.y -= player_vel
+        if keys[pygame.K_DOWN] and player.y + player_vel + player.get_height() + 15 < HEIGHT:  # down
+            player.y += player_vel
+        if keys[pygame.K_SPACE]:
+            player.hit()
 
-                x = player_pos[0]
-                y = player_pos[1]
+        if stop_this_enemy == False:
+            
+            for enemy in enemies[:]:
+                enemy.move()
+                enemy.move_lasers(laser_vel, player)
 
-                if event.key == pygame.K_LEFT:
-                    x -= player_size
-                elif event.key == pygame.K_RIGHT:
-                    x += player_size
+                if random.randrange(0, 16) == 1:
+                    enemy.hit()
 
-                player_pos = [x, y]
-        screen.fill(BACKGROUND_COLOR)
-        drop_enemies(enemy_list)
-        score = update_enemy_positions(enemy_list, score)
+                if collide(enemy, player):
+                    player.health -= 1
+                    enemy.health -= 1
 
-        text = "Score:" + str(score)
-        label = myFont.render(text, 1, BLACK)
-        screen.blit(label, (WIDTH-200, HEIGHT-40))
+                elif enemy.x + enemy.get_width() > WIDTH:
+                    enemy.x -= enemy_vel
 
-        if collision_check(enemy_list, player_pos):
-            game_over = True
-            break
-        elif score == 25:
-            text = "You win"
-            label = myFont.render(text, 1, BLACK)
-            screen.blit(label, (WIDTH-380, HEIGHT-340))
+                if enemy.health <= 0:
+                    victory_count += 1
+                    level += 1
+                    enemies.remove(enemy)
 
-            pygame.display.flip()
-            pygame.event.pump()
-            pygame.time.delay(3500)
-            game_over = True
-            pygame.quit()
-            sys.exit()
+                if player.health <= 0:
+                    lost_count += 1
+                    enemy_level += 1
+                    players.remove(player)
+                    
 
-        draw_enemies(enemy_list)
-
-        pygame.draw.rect(screen, BLUE,
-                         (player_pos[0], player_pos[1], player_size, player_size))
-        clock.tick(30)
-        pygame.display.update()
+                player.move_lasers(-laser_vel, enemies)
