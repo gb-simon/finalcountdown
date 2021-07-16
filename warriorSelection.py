@@ -10,7 +10,7 @@ pygame.display.set_caption('The Final Countdown')
 screen = pygame.display.set_mode((800, 600), 0, 32)
 WHITE = (255, 255, 255)
 title_font = pygame.font.SysFont(None, 35)
-warrior_font = pygame.font.SysFont(None, 15)
+warrior_font = pygame.font.SysFont(None, 20)
 normal_font = pygame.font.SysFont(None, 25)
 BACKGROUND_COLOR = (173, 216, 230)
 square_size_x, square_size_y = 75, 75
@@ -20,6 +20,7 @@ blue_color = (0, 0, 255)
 green_color = (0, 255, 0)
 red_color = (255, 0, 0)
 yellow_color = (255, 255, 0)
+
 
 def draw_text(text, normal_font, color, surface, x, y):
     textobj = normal_font.render(text, 1, color)
@@ -46,8 +47,9 @@ def warriorSelection():
         text_2 = warrior_font.render("Austin", True, (0, 155, 0))
         text_3 = warrior_font.render("Horo", True, (255, 0, 0))
         text_4 = warrior_font.render("Ignición", True, (190, 190, 0))
-        help = normal_font.render("With the arrows you move. Press space to attact", True, (0, 0, 0))
-        
+        help = normal_font.render(
+            "With the arrows you move. Press space to attact", True, (0, 0, 0))
+
         pygame.draw.rect(screen, blue_color, blue)
         pygame.draw.rect(screen, green_color, green)
         pygame.draw.rect(screen, red_color, red)
@@ -60,15 +62,16 @@ def warriorSelection():
         screen.blit(text_4, (510, 250))
         screen.blit(help, (100, 500))
 
-
         if blue.collidepoint((mx, my)):
             print("ready for the party")
             if click:
                 main("blue")
+
         if green.collidepoint((mx, my)):
+            print("NACHOOO")
             if click:
-                print("NACHOOO")
                 main("green")
+
         if red.collidepoint((mx, my)):
             print("dejame el red")
             if click:

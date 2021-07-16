@@ -65,4 +65,3 @@ def main_menu():
         mainClock.tick(60)
 
 
-main_menu()

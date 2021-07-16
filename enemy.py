@@ -50,7 +50,7 @@ class Enemy(Warrior):
         "red": (RED_WARRIOR, RED_LASER, RED_NAME),
         "green": (GREEN_WARRIOR, GREEN_LASER, GREEN_NAME),
         "blue": (BLUE_WARRIOR, BLUE_LASER, BLUE_NAME),
-        "yellow":(YELLOW_WARRIOR, YELLOW_LASER, YELLOW_NAME)
+        "yellow": (YELLOW_WARRIOR, YELLOW_LASER, YELLOW_NAME)
     }
 
     def __init__(self, x, y, color, health=100):
@@ -76,6 +76,14 @@ class Enemy(Warrior):
         self.healthbar(window)
 
     def hit(self):
+        print("hit")
+
+    def ultimate(self):
+        print("ultimate")
+        if self.cool_down_counter == 0:
+           self.cool_down_counter = 1
+           
+    def shoot(self):
         if self.cool_down_counter == 0:
             laser = Laser(self.x-20, self.y, self.laser_img)
             self.lasers.append(laser)
@@ -87,4 +95,4 @@ class Enemy(Warrior):
         pygame.draw.rect(window, (0, 255, 0), (self.x, self.y + self.warrior_img.get_height() +
                          10, self.warrior_img.get_width() * (self.health/self.max_health), 10))
         window.blit(self.warrior_name, (self.x, self.y + self.warrior_img.get_height() +
-                         10, self.warrior_img.get_width() * (self.health/self.max_health), 30))
+                                        10, self.warrior_img.get_width() * (self.health/self.max_health), 30))

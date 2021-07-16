@@ -137,8 +137,12 @@ def main(player_color_choice):
             player.y -= player_vel
         if keys[pygame.K_DOWN] and player.y + player_vel + player.get_height() + 15 < HEIGHT:  # down
             player.y += player_vel
-        if keys[pygame.K_SPACE]:
+        if keys[pygame.K_z]:
+            player.shoot()
+        if keys[pygame.K_x]:
             player.hit()
+        if keys[pygame.K_c]:
+            player.ultimate()
 
         if stop_this_enemy == False:
             
@@ -147,11 +151,12 @@ def main(player_color_choice):
                 enemy.move_lasers(laser_vel, player)
 
                 if random.randrange(0, 16) == 1:
-                    enemy.hit()
+                    enemy.shoot()
 
+                
                 if collide(enemy, player):
                     player.health -= 1
-                    enemy.health -= 1
+                    enemy.hit()
 
                 elif enemy.x + enemy.get_width() > WIDTH:
                     enemy.x -= enemy_vel
